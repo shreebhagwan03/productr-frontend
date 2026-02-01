@@ -1,0 +1,15 @@
+/* 
+@tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+@media (max-width: 767px) {
+  .flex-grow-1 {
+    margin-left: 0 !important;
+  }
+}
+@media (min-width: 768px) {
+  .ms-md-240 {
+    margin-left: 240px;
+  }
+}
