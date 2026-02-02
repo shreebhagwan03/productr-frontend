@@ -1,0 +1,31 @@
+name: Deploy Productr
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+
+          script: |
+            cd ~/productr-frontend
+            git pull origin main
+            npm install
+            npm run build
+
+            pm2 delete productr-frontend || true
+            pm2 start serve --name productr-frontend -- -s build -l 3000
+
+            # Save PM2 so it survives reboot
+            pm2 save
