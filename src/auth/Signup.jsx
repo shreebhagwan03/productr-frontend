@@ -50,10 +50,14 @@ const Signup = () => {
       isValid = false;
     }
 
-    if (!isValid) return;
+    if (!isValid) {
+      console.log("Signup validation failed");
+      return;
+    }
 
     try {
       setLoading(true);
+
       await api.post("/auth/send-otp", {
         email: value.includes("@") ? value : undefined,
         mobile: !value.includes("@") ? value : undefined,
@@ -61,17 +65,23 @@ const Signup = () => {
         type: "signup",
       });
 
+      console.log("Signup success");
+
       navigate("/login", { replace: true });
 
     } catch (err) {
 
       if (err.response) {
+        console.log("Signup server error:", err.response.data);
+        console.log("Status:", err.response.status);
         setError(err.response.data?.message || "Signup failed");
       }
       else if (err.request) {
+        console.log("Server not responding");
         setError("Unable to connect. Try again.");
       }
       else {
+        console.log("Signup error:", err.message);
         setError("Signup failed");
       }
 
@@ -86,12 +96,11 @@ const Signup = () => {
       className="container-fluid p-0"
       style={{
         height: "100dvh",
-        overflow: "hidden"  
+        overflow: "hidden"
       }}
     >
       <div className="row h-100 g-0">
 
-        {/* LEFT SIDE */}
         <div className="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-light flex-shrink-0">
           <div
             className="w-75 rounded-4 shadow position-relative d-flex align-items-center justify-content-center"

@@ -48,7 +48,10 @@ const Login = () => {
       isValid = false;
     }
 
-    if (!isValid) return;
+    if (!isValid) {
+      console.log("Login validation failed");
+      return;
+    }
 
     try {
       await api.post("/auth/send-otp", {
@@ -58,6 +61,8 @@ const Login = () => {
         type: "login",
       });
 
+      console.log("OTP sent successfully");
+
       navigate("/otp", {
         state: { value },
         replace: true,
@@ -66,12 +71,16 @@ const Login = () => {
     } catch (err) {
 
       if (err.response) {
+        console.log("Login server error:", err.response.data);
+        console.log("Status:", err.response.status);
         setError(err.response.data?.message || "Login failed");
       }
       else if (err.request) {
+        console.log("Server not responding");
         setError("Unable to connect. Try again.");
       }
       else {
+        console.log("Login error:", err.message);
         setError("Login failed");
       }
     }
