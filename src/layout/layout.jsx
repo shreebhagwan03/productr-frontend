@@ -9,7 +9,7 @@ const Layout = () => {
   const navigate = useNavigate();
   const profileRef = useRef(null);
 
-  // 🔹 PAGE TITLE LOGIC
+  // PAGE TITLE LOGIC
   const pageTitle =
     location.pathname === "/home"
       ? "Home"
@@ -17,38 +17,46 @@ const Layout = () => {
         ? "Products"
         : "";
 
-
-  // 🔥 LOGOUT
+  // LOGOUT
   const logout = () => {
+
+    console.log("User logged out");
+
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("token");
+
     navigate("/login", { replace: true });
   };
 
-  // 🔽 CLOSE DROPDOWN ON OUTSIDE CLICK
+  // CLOSE DROPDOWN ON OUTSIDE CLICK
   useEffect(() => {
     const handler = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
         setShowProfile(false);
       }
     };
+
     document.addEventListener("mousedown", handler);
+
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // 🔒 AUTH GUARD
+  // AUTH GUARD
   const token = localStorage.getItem("token");
-  if (!token) return <Navigate to="/login" replace />;
+
+  if (!token) {
+    console.warn("No token found. Redirecting to login.");
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <div className="d-flex min-vh-100 bg-light">
-      {/* ================= SIDEBAR ================= */}
       <Sidebar show={showSidebar} setShow={setShowSidebar} />
 
-      {/* ================= MAIN CONTENT ================= */}
+      {/* MAIN CONTENT */}
       <div className="flex-grow-1 d-flex flex-column ms-md-240">
 
-        {/* ================= MOBILE TOP BAR ================= */}
+        {/* MOBILE TOP BAR */}
         <div
           className="d-flex align-items-center justify-content-between px-3 py-2 bg-white border-bottom position-fixed top-0 start-0 w-100 d-md-none"
           style={{ zIndex: 1100 }}
@@ -62,7 +70,7 @@ const Layout = () => {
 
           <h6 className="mb-0 fw-semibold">{pageTitle}</h6>
 
-          {/* 🔥 MOBILE PROFILE */}
+          {/* MOBILE PROFILE */}
           <div className="position-relative" ref={profileRef}>
             <div
               className="rounded-circle bg-secondary text-white px-2"
@@ -89,11 +97,11 @@ const Layout = () => {
           </div>
         </div>
 
-        {/* ================= DESKTOP TOP BAR ================= */}
+        {/* DESKTOP TOP BAR */}
         <div className="d-none d-md-flex align-items-center justify-content-between px-4 py-2 bg-white border-bottom">
           <h5 className="mb-0 fw-semibold">{pageTitle}</h5>
 
-          {/* 🔥 DESKTOP PROFILE */}
+          {/* DESKTOP PROFILE */}
           <div className="position-relative" ref={profileRef}>
             <div
               className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
@@ -127,7 +135,7 @@ const Layout = () => {
           </div>
         </div>
 
-        {/* ================= PAGE CONTENT ================= */}
+   
         <div className="flex-grow-1 p-3 p-sm-4 pt-5 pt-md-4">
           <Outlet />
         </div>

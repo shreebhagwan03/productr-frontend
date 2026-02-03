@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const Login = () => {
   const [value, setValue] = useState("");
   const [password, setPassword] = useState("");
 
-  // 🔹 field-wise errors
   const [valueError, setValueError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  // 🔹 API error
   const [error, setError] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
@@ -23,19 +22,16 @@ const Login = () => {
 
     let isValid = true;
 
-    // ✅ EMAIL / PHONE VALIDATION
     if (!value) {
       setValueError("Email or phone number is required");
       isValid = false;
     }
-    // 🔹 only numbers → phone
     else if (/^\d+$/.test(value)) {
       if (!/^[6-9]\d{9}$/.test(value)) {
         setValueError("Phone number is invalid");
         isValid = false;
       }
     }
-    // 🔹 text → email
     else {
       if (!/^\S+@\S+\.\S+$/.test(value)) {
         setValueError("Email address is invalid");
@@ -43,16 +39,19 @@ const Login = () => {
       }
     }
 
-    // ✅ PASSWORD VALIDATION
     if (!password) {
       setPasswordError("Password is required");
       isValid = false;
-    } else if (password.length < 6) {
+    } 
+    else if (password.length < 6) {
       setPasswordError("Password must be at least 6 characters");
       isValid = false;
     }
 
-    if (!isValid) return;
+    if (!isValid) {
+      console.log("Login validation failed");
+      return;
+    }
 
     try {
       await api.post("/auth/send-otp", {
@@ -61,20 +60,36 @@ const Login = () => {
         password,
         type: "login",
       });
+      console.log("OTP sent successfully");
 
       navigate("/otp", {
         state: { value },
         replace: true,
       });
+
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+
+      if (err.response) {
+        console.log("Login server error:", err.response.data);
+        console.log("Status:", err.response.status);
+        setError(err.response.data?.message || "Login failed");
+      }
+      else if (err.request) {
+        console.log("Server not responding");
+        setError("Unable to connect. Try again.");
+      }
+      else {
+        console.log("Login error:", err.message);
+        setError("Login failed");
+      }
     }
   };
 
   return (
     <div className="container-fluid min-vh-100">
       <div className="row min-vh-100">
-        {/* LEFT */}
+
+
         <div className="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-light">
           <div
             className="w-75 rounded-4 shadow position-relative d-flex align-items-center justify-content-center"
@@ -83,12 +98,10 @@ const Login = () => {
               background: "linear-gradient(135deg, #e0e7ff, #fef3c7, #fde68a)",
             }}
           >
-            {/* LOGO */}
             <div className="position-absolute top-0 start-0 p-3 fw-bold">
               Productr<span style={{ color: "orange" }}>🔥</span>
             </div>
 
-            {/* IMAGE WRAPPER */}
             <div
               className="d-flex align-items-center justify-content-center shadow-lg"
               style={{
@@ -112,15 +125,20 @@ const Login = () => {
           </div>
         </div>
 
-
-        {/* RIGHT */}
         <div className="col-12 col-md-6 d-flex align-items-center justify-content-center px-3">
-          <div className="w-100" style={{ maxWidth: 360 }}>
+
+          <form
+            className="w-100"
+            style={{ maxWidth: 360 }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              login();
+            }}
+          >
             <h5 className="fw-bold text-primary text-center mb-4">
               Login to your Productr Account
             </h5>
 
-            {/* 🔴 API ERROR */}
             {error && (
               <div className="text-danger small text-center mb-2">
                 {error}
@@ -134,6 +152,7 @@ const Login = () => {
             <input
               className="form-control mb-1"
               placeholder="Enter email or phone number"
+              autoComplete="username"
               value={value}
               onChange={(e) => {
                 setValue(e.target.value);
@@ -152,6 +171,7 @@ const Login = () => {
                 type={showPassword ? "text" : "password"}
                 className="form-control"
                 placeholder="Enter Password"
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -164,7 +184,7 @@ const Login = () => {
                 style={{ cursor: "pointer", userSelect: "none" }}
                 onClick={() => setShowPassword((p) => !p)}
               >
-                {showPassword ? "🙈" : "👁️"}
+                {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
               </span>
             </div>
 
@@ -175,8 +195,8 @@ const Login = () => {
             )}
 
             <button
+              type="submit"
               className="btn btn-primary w-100"
-              onClick={login}
             >
               Login
             </button>
@@ -192,7 +212,8 @@ const Login = () => {
                 SignUp Here
               </span>
             </div>
-          </div>
+
+          </form>
         </div>
       </div>
     </div>

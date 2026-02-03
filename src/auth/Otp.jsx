@@ -10,17 +10,18 @@ const Otp = () => {
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [error, setError] = useState("");
 
-  // email OR mobile
   const value = state?.value;
 
-  /* ================= PROTECT PAGE ================= */
+  /*  PROTECT PAGE  */
   useEffect(() => {
-    if (!value) navigate("/login", { replace: true });
+    if (!value) {
+      console.log("OTP page opened without login. Redirecting...");
+      navigate("/login", { replace: true });
+    }
   }, [value, navigate]);
 
 
-
-  /* ================= OTP INPUT ================= */
+  /*  OTP INPUT  */
   const handleChange = (val, i) => {
     if (!/^[0-9]?$/.test(val)) return;
 
@@ -32,10 +33,13 @@ const Otp = () => {
     if (val && i < 5) inputsRef.current[i + 1]?.focus();
   };
 
-  /* ================= VERIFY OTP ================= */
+  /* VERIFY OTP */
   const verifyOtp = async () => {
+
     setError("");
+
     if (otp.join("").length < 6) {
+      console.log("OTP validation failed");
       setError("Please enter full 6 digit OTP");
       return;
     }
@@ -47,13 +51,28 @@ const Otp = () => {
         otp: otp.join(""),
       });
 
-      // ✅ LOGIN SUCCESS
+      console.log("OTP verified successfully");
+
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("isLoggedIn", "true");
 
       navigate("/home", { replace: true });
+
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid OTP");
+
+      if (err.response) {
+        console.log("OTP server error:", err.response.data);
+        console.log("Status:", err.response.status);
+        setError(err.response.data?.message || "Invalid OTP");
+      }
+      else if (err.request) {
+        console.log("Server not responding during OTP verification");
+        setError("Unable to connect. Try again.");
+      }
+      else {
+        console.log("OTP error:", err.message);
+        setError("OTP verification failed");
+      }
     }
   };
 
@@ -62,7 +81,6 @@ const Otp = () => {
     <div className="container-fluid min-vh-100">
       <div className="row min-vh-100">
 
-        {/* LEFT */}
         <div className="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-light">
           <div
             className="w-75 rounded-4 shadow position-relative d-flex align-items-center justify-content-center"
@@ -71,12 +89,10 @@ const Otp = () => {
               background: "linear-gradient(135deg, #e0e7ff, #fef3c7, #fde68a)",
             }}
           >
-            {/* LOGO */}
             <div className="position-absolute top-0 start-0 p-3 fw-bold">
               Productr<span style={{ color: "orange" }}>🔥</span>
             </div>
 
-            {/* IMAGE WRAPPER */}
             <div
               className="d-flex align-items-center justify-content-center shadow-lg"
               style={{
@@ -100,9 +116,17 @@ const Otp = () => {
           </div>
         </div>
 
-        {/* RIGHT */}
+
         <div className="col-12 col-md-6 d-flex align-items-center justify-content-center px-3 ">
-          <div className="w-100" style={{ maxWidth: 360 }}>
+
+          <form
+            className="w-100"
+            style={{ maxWidth: 360 }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              verifyOtp();
+            }}
+          >
             <h5 className="fw-bold text-primary text-center mb-4">
               Verify OTP
             </h5>
@@ -115,6 +139,7 @@ const Otp = () => {
                   ref={(el) => (inputsRef.current[i] = el)}
                   maxLength="1"
                   inputMode="numeric"
+                  autoComplete="one-time-code"
                   className="form-control text-center fs-5"
                   style={{ width: 48, height: 48 }}
                   value={d}
@@ -125,23 +150,20 @@ const Otp = () => {
               ))}
             </div>
 
-            {/* 🔴 ERROR BELOW OTP */}
             {error && (
               <div className="text-danger small text-center mt-2 mb-3">
                 {error}
               </div>
             )}
 
-
-
-            {/* VERIFY BUTTON */}
             <button
+              type="submit"
               className="btn btn-primary w-100 mt-4"
-              onClick={verifyOtp}
             >
               Verify OTP
             </button>
-          </div>
+
+          </form>
         </div>
       </div>
     </div>

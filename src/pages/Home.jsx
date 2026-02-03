@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 const Home = () => {
   const [tab, setTab] = useState("published");
   const [products, setProducts] = useState([]);
-  const navigate = useNavigate();
   const [success, setSuccess] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -28,7 +26,7 @@ const Home = () => {
   });
 
 
-  /* ================= LOAD PRODUCTS ================= */
+  /* LOAD PRODUCTS */
   const loadProducts = async (type) => {
     const res = await api.get(`/products/status/${type}`);
     setProducts(res.data);
@@ -38,7 +36,7 @@ const Home = () => {
     loadProducts(tab);
   }, [tab]);
 
-  /* ================= ACTIONS ================= */
+  /* ACTIONS  */
   const togglePublish = async (id) => {
     await api.patch(`/products/${id}/publish`);
     loadProducts(tab);
@@ -109,7 +107,7 @@ const Home = () => {
   return (
     <div className="p-3 p-sm-4">
 
-      {/* ================= TABS ================= */}
+      {/*  TABS  */}
       <div className="d-flex flex-wrap justify-content-center justify-content-sm-start gap-2 gap-sm-3 border-bottom mb-4">
         <button
           className={`btn btn-link fw-semibold px-3 py-2 ${tab === "published"
@@ -131,7 +129,7 @@ const Home = () => {
           Unpublished
         </button>
       </div>
-      {/* ================= DELETE CONFIRM MODAL ================= */}
+      {/* DELETE CONFIRM MODAL */}
       {deleteId && (
         <>
           {/* BACKDROP */}
@@ -324,14 +322,14 @@ const Home = () => {
             style={{ width: "fit-content" }}
           >
             {lastAction === "delete"
-              ? "Product deleted successfully 🗑"
-              : "Product updated successfully ✅"}
+              ? "Product deleted successfully "
+              : "Product updated successfully "}
           </div>
         </div>
       )}
 
 
-      {/* ================= EMPTY STATE ================= */}
+      {/*  EMPTY STATE */}
       {products.length === 0 && (
         <div
           className="d-flex flex-column align-items-center justify-content-center text-center px-3"
@@ -358,7 +356,7 @@ const Home = () => {
         </div>
       )}
 
-      {/* ================= PRODUCTS GRID ================= */}
+      {/*  PRODUCTS GRID  */}
       {products.length > 0 && (
         <div className="row g-3">
           {products.map((p) => (

@@ -7,7 +7,6 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [images, setImages] = useState([]);
   const [errors, setErrors] = useState({});
-  const [success, setSuccess] = useState(false);
   const [editId, setEditId] = useState(null);
   const location = useLocation();
   const [deleteId, setDeleteId] = useState(null);
@@ -15,7 +14,7 @@ const Products = () => {
   const [toast, setToast] = useState({
     show: false,
     message: "",
-    type: "success", // success | danger
+    type: "success", 
   });
 
   const [form, setForm] = useState({
@@ -47,7 +46,7 @@ const Products = () => {
     }
   }, [location.state]);
 
-  /* ================= LOAD PRODUCTS ================= */
+  /* LOAD PRODUCTS */
   const fetchProducts = async () => {
     const res = await api.get("/products");
     setProducts(res.data);
@@ -57,7 +56,7 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  /* ================= FORM ================= */
+  /* FORM */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -84,7 +83,7 @@ const Products = () => {
   };
 
 
-  /* ================= CREATE / UPDATE ================= */
+  /*  CREATE / UPDATE  */
   const handleSubmit = async () => {
     const err = validate();
     setErrors(err);
@@ -114,12 +113,11 @@ const Products = () => {
       });
       setImages([]);
       setErrors({});
-      setSuccess(true);
       setToast({
         show: true,
         message: editId
-          ? "Product updated successfully ✅"
-          : "Product created successfully ✅",
+          ? "Product updated successfully "
+          : "Product created successfully ",
         type: "success",
       });
 
@@ -128,13 +126,12 @@ const Products = () => {
       }, 2000);
 
       fetchProducts();
-      setTimeout(() => setSuccess(false), 2000);
     } catch {
       alert("Product save failed");
     }
   };
 
-  /* ================= EDIT ================= */
+  /*EDIT  */
   const handleEdit = (product) => {
     setEditId(product._id);
     setForm({
@@ -157,7 +154,6 @@ const Products = () => {
       await api.delete(`/products/${deleteId}`);
       setDeleteId(null);
       fetchProducts();
-      setSuccess(true);
       setToast({
         show: true,
         message: "Product deleted successfully 🗑",
@@ -168,7 +164,6 @@ const Products = () => {
         setToast({ show: false, message: "", type: "success" });
       }, 2000);
 
-      setTimeout(() => setSuccess(false), 3000);
     } finally {
       setDeleteLoading(false);
     }
@@ -195,7 +190,7 @@ const Products = () => {
         </button>
       </div>
 
-      {/* ================= PRODUCT GRID ================= */}
+      {/* PRODUCT GRID  */}
       <div className="row g-3">
         {products.map((p) => (
           <div
@@ -311,7 +306,7 @@ const Products = () => {
           </div>
         </>
       )}
-      {/* ================= MODAL ================= */}
+      {/*  MODAL */}
       {showModal && (
         <>
           {/* OVERLAY */}
@@ -331,7 +326,7 @@ const Products = () => {
               className="bg-white rounded shadow mx-auto"
               style={{
                 width: "100%",
-                maxWidth: 420, // desktop & laptop
+                maxWidth: 420, 
                 maxHeight: "calc(100vh - 30px)",
               }}
             >

@@ -1,6 +1,17 @@
 import { NavLink } from "react-router-dom";
 
 const Sidebar = ({ show, setShow }) => {
+
+  const handleNavigation = (route) => {
+    console.log("Navigating to:", route);
+    setShow(false);
+  };
+
+  const handleOverlayClick = () => {
+    console.log("Sidebar closed");
+    setShow(false);
+  };
+
   return (
     <>
       {/* OVERLAY (MOBILE) */}
@@ -8,14 +19,15 @@ const Sidebar = ({ show, setShow }) => {
         <div
           className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-md-none"
           style={{ zIndex: 1040 }}
-          onClick={() => setShow(false)}
+          onClick={handleOverlayClick}
         />
       )}
 
       {/* SIDEBAR */}
       <div
-        className={`text-white p-3 position-fixed top-0 start-0 h-100 ${show ? "d-block" : "d-none"
-          } d-md-block`}
+        className={`text-white p-3 position-fixed top-0 start-0 h-100 ${
+          show ? "d-block" : "d-none"
+        } d-md-block`}
         style={{
           width: 240,
           background: "#0f172a",
@@ -34,10 +46,9 @@ const Sidebar = ({ show, setShow }) => {
         <NavLink
           to="/home"
           className={({ isActive }) =>
-            `nav-link ${isActive ? "text-white fw-bold" : "text-white-50"
-            }`
+            `nav-link ${isActive ? "text-white fw-bold" : "text-white-50"}`
           }
-          onClick={() => setShow(false)}
+          onClick={() => handleNavigation("/home")}
         >
           Home
         </NavLink>
@@ -45,10 +56,9 @@ const Sidebar = ({ show, setShow }) => {
         <NavLink
           to="/products"
           className={({ isActive }) =>
-            `nav-link ${isActive ? "text-white fw-bold" : "text-white-50"
-            }`
+            `nav-link ${isActive ? "text-white fw-bold" : "text-white-50"}`
           }
-          onClick={() => setShow(false)}
+          onClick={() => handleNavigation("/products")}
         >
           Products
         </NavLink>
