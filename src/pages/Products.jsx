@@ -156,7 +156,7 @@ const Products = () => {
       fetchProducts();
       setToast({
         show: true,
-        message: "Product deleted successfully 🗑",
+        message: "Product deleted successfully",
         type: "danger",
       });
 

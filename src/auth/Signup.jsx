@@ -50,10 +50,7 @@ const Signup = () => {
       isValid = false;
     }
 
-    if (!isValid) {
-      console.log("Signup validation failed");
-      return;
-    }
+    if (!isValid) return;
 
     try {
       setLoading(true);
@@ -64,23 +61,17 @@ const Signup = () => {
         type: "signup",
       });
 
-      console.log("Signup success");
-
       navigate("/login", { replace: true });
 
     } catch (err) {
 
       if (err.response) {
-        console.log("Signup server error:", err.response.data);
-        console.log("Status:", err.response.status);
         setError(err.response.data?.message || "Signup failed");
       }
       else if (err.request) {
-        console.log("Server not responding");
         setError("Unable to connect. Try again.");
       }
       else {
-        console.log("Signup error:", err.message);
         setError("Signup failed");
       }
 
@@ -91,15 +82,22 @@ const Signup = () => {
 
 
   return (
-    <div className="container-fluid min-vh-100">
-      <div className="row min-vh-100">
+    <div
+      className="container-fluid p-0"
+      style={{
+        height: "100dvh",
+        overflow: "hidden"  
+      }}
+    >
+      <div className="row h-100 g-0">
 
-
-        <div className="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-light">
+        {/* LEFT SIDE */}
+        <div className="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-light flex-shrink-0">
           <div
             className="w-75 rounded-4 shadow position-relative d-flex align-items-center justify-content-center"
             style={{
-              height: "85%",
+              minHeight: "520px",
+              maxHeight: "90dvh",
               background: "linear-gradient(135deg, #e0e7ff, #fef3c7, #fde68a)",
             }}
           >
@@ -110,8 +108,9 @@ const Signup = () => {
             <div
               className="d-flex align-items-center justify-content-center shadow-lg"
               style={{
-                width: "260px",
-                height: "420px",
+                width: "100%",
+                maxWidth: "260px",
+                aspectRatio: "9/16",
                 borderRadius: "28px",
                 background: "linear-gradient(180deg, #ffedd5, #fed7aa)",
               }}
@@ -130,7 +129,6 @@ const Signup = () => {
           </div>
         </div>
 
- 
         <div className="col-12 col-md-6 d-flex align-items-center justify-content-center px-3">
 
           <form
@@ -182,7 +180,8 @@ const Signup = () => {
                 onChange={(e) => {
                   setPassword(e.target.value);
                   setPasswordError("");
-                }} />
+                }}
+              />
 
               <span
                 className="position-absolute top-50 end-0 translate-middle-y px-3"
