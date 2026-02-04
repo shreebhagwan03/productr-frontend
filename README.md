@@ -4,6 +4,13 @@ Frontend for **Productr**, a product management dashboard with OTP authenticatio
 
 Backend Repo: https://github.com/shreebhagwan03/productr-backend
 
+## Live Demo
+http://3.110.30.201:3000/
+Test Credentials / Flow:
+- Signup → Create a new account
+- Login → Access the dashboard
+
+
 ## Tech Stack
 - React
 - Axios
